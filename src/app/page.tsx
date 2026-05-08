@@ -1,90 +1,55 @@
 /**
- * @page Home
- * @description Page principale - Liste des pharmacies de garde au Togo
+ * @page Home - MODE KIOSK
+ * @description Affichage kiosk vertical : curseur masqué, pas d'interaction,
+ * défilement automatique infini de la liste des pharmacies.
  */
 
 'use client';
 
 import { usePharmacies } from '@/hooks/use-pharmacies';
-import { PharmacyHeader } from '@/components/pharmacy/pharmacy-header';
-import { PharmacyList } from '@/components/pharmacy/pharmacy-list';
-import { PharmacyFooter } from '@/components/pharmacy/pharmacy-footer';
+import { KioskHeader } from '@/components/pharmacy/kiosk-header';
+import { KioskScrollList } from '@/components/pharmacy/kiosk-scroll-list';
+import { KioskFooter } from '@/components/pharmacy/kiosk-footer';
 import { EmptyState } from '@/components/pharmacy/empty-state';
 
 export default function Home() {
   const {
-    filteredPharmacies,
+    pharmacies,
     isLoading,
-    isRefreshing,
     error,
     lastUpdate,
-    searchQuery,
-    setSearchQuery,
-    refresh,
-    clearCache,
-    pharmacies,
   } = usePharmacies();
 
-  const hasSearch = searchQuery.trim().length > 0;
-
   return (
-    <div className="min-h-screen flex flex-col">
-      <PharmacyHeader
-        searchQuery={searchQuery}
-        onSearchChange={setSearchQuery}
-        isRefreshing={isRefreshing}
-        onRefresh={refresh}
-        onClearCache={clearCache}
+    <div className="h-screen flex flex-col bg-gray-50 overflow-hidden">
+      {/* Header fixe */}
+      <KioskHeader
         totalPharmacies={pharmacies.length}
-        filteredCount={filteredPharmacies.length}
+        lastUpdate={lastUpdate}
       />
 
-      <main className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-5 sm:py-8">
-        {/* Indicateur de dernière mise à jour */}
-        {!isLoading && lastUpdate && !error && (
-          <div className="mb-4 flex items-center justify-center gap-2 text-xs text-gray-400">
-            <span>Dernière mise à jour</span>
-            <span className="font-medium text-gray-500">
-              {new Date(lastUpdate).toLocaleDateString('fr-FR', {
-                day: 'numeric',
-                month: 'long',
-                year: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit',
-              })}
-            </span>
-          </div>
-        )}
-
-        {/* Indicateur de rafraîchissement */}
-        {isRefreshing && (
-          <div className="mb-4 flex items-center justify-center gap-2 text-xs text-emerald-600">
-            <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-            <span className="font-medium">Mise à jour en cours...</span>
-          </div>
-        )}
-
-        {/* Contenu principal */}
-        {isLoading ? (
+      {/* Zone de défilement automatique infini */}
+      {isLoading ? (
+        <div className="flex-1 flex items-center justify-center">
           <EmptyState type="loading" />
-        ) : error ? (
+        </div>
+      ) : error ? (
+        <div className="flex-1 flex items-center justify-center">
           <EmptyState type="error" message={error} />
-        ) : filteredPharmacies.length === 0 && hasSearch ? (
-          <EmptyState
-            type="no-results"
-            message={`Aucune pharmacie ne correspond à « ${searchQuery } »`}
-          />
-        ) : filteredPharmacies.length === 0 ? (
+        </div>
+      ) : pharmacies.length === 0 ? (
+        <div className="flex-1 flex items-center justify-center">
           <EmptyState
             type="no-results"
             message="Aucune pharmacie de garde trouvée pour le moment."
           />
-        ) : (
-          <PharmacyList pharmacies={filteredPharmacies} />
-        )}
-      </main>
+        </div>
+      ) : (
+        <KioskScrollList pharmacies={pharmacies} />
+      )}
 
-      <PharmacyFooter />
+      {/* Footer fixe */}
+      <KioskFooter />
     </div>
   );
 }

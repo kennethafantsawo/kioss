@@ -118,5 +118,50 @@
   }
   body {
     @apply bg-background text-foreground;
+    cursor: none;
+    -webkit-user-select: none;
+    user-select: none;
+    pointer-events: none;
+    overflow: hidden;
+    touch-action: none;
   }
+  a, button, input, [role="button"] {
+    cursor: none;
+    pointer-events: none;
+  }
+}
+
+/* ===== KIOSK MODE - Infinite Scroll Animation ===== */
+@keyframes kiosk-scroll {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-50%);
+  }
+}
+
+.kiosk-scroll-container {
+  overflow: hidden;
+  height: calc(100vh - 180px);
+  position: relative;
+}
+
+.kiosk-scroll-track {
+  animation: kiosk-scroll var(--scroll-duration, 120s) linear infinite;
+  will-change: transform;
+}
+
+.kiosk-scroll-track:hover {
+  animation-play-state: paused;
+}
+
+/* Kiosk clock pulse */
+@keyframes kiosk-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+.kiosk-clock-separator {
+  animation: kiosk-pulse 1s ease-in-out infinite;
 }

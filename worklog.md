@@ -39,3 +39,27 @@ Stage Summary:
 - Appels téléphoniques directs via tel: links
 - PWA installable avec support hors-ligne
 - Design mobile-first responsive avec thème santé/vert
+
+---
+Task ID: 2
+Agent: Main Architect
+Task: Adaptation mode kiosk — écran vertical sans interaction, défilement automatique infini
+
+Work Log:
+- Masqué le curseur de la souris globalement via CSS (cursor: none)
+- Désactivé toutes les interactions : pointer-events: none, user-select: none, touch-action: none, overflow: hidden
+- Créé KioskHeader : branding fixe avec horloge temps réel (HH:MM:SS clignotant), date, compteur pharmacies
+- Créé KioskPharmacyCard : affichage lecture seule (pas de boutons, pas de liens, pas de clic tel:)
+- Créé KioskScrollList : défilement automatique infini via CSS @keyframes translateY(-50%)
+  - Liste dupliquée 2x pour boucle invisible
+  - Vitesse calculée dynamiquement (~80px/s) via useMemo
+  - Grille responsive lg:grid-cols-2 pour écran vertical large
+- Créé KioskFooter : bande fixe discrète avec crédits (pas de liens cliquables)
+- Mis à jour la page principale : layout h-screen flex-col avec header/footer fixes et zone scroll
+- Ajouté animations CSS : kiosk-scroll (translateY), kiosk-pulse (séparateur horloge)
+
+Stage Summary:
+- Mode kiosk fonctionnel : aucun curseur, aucune interaction possible
+- Défilement infini fluide des 51 pharmacies (~140s par cycle complet)
+- Horloge temps réel avec séparateur clignotant
+- Layout optimisé pour écran vertical (header fixe + scroll + footer fixe)
