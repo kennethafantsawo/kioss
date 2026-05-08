@@ -53,7 +53,7 @@ export function KioskScrollList({ pharmacies }: KioskScrollListProps) {
         }
       >
         {/* 2 copies pour la boucle (translate -50%) */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 px-4 sm:px-6 lg:px-8 pb-6">
+        <div className="grid grid-cols-3 gap-4 px-4 sm:px-6 lg:px-8 pb-6">
           {[...pharmacies, ...pharmacies].map((pharmacy, index) => (
             <KioskPharmacyCard
               key={`${pharmacy.id}-${index}`}
