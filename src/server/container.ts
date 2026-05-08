@@ -7,6 +7,7 @@
 
 import { ScraperService } from './services/scraper.service';
 import { CacheService } from './services/cache.service';
+import { SchedulerService } from './services/scheduler.service';
 import { PharmacyController } from './controllers/pharmacy.controller';
 import type { IPharmacyController, IScraperService, ICacheService, SyncResult } from './interfaces';
 
@@ -14,6 +15,7 @@ import type { IPharmacyController, IScraperService, ICacheService, SyncResult } 
 let scraperServiceInstance: IScraperService | null = null;
 let cacheServiceInstance: ICacheService<SyncResult> | null = null;
 let pharmacyControllerInstance: IPharmacyController | null = null;
+let schedulerStarted = false;
 
 /**
  * Récupère ou crée l'instance du ScraperService
@@ -47,4 +49,19 @@ export function getPharmacyController(): IPharmacyController {
     );
   }
   return pharmacyControllerInstance;
+}
+
+/**
+ * Démarre le planificateur de scraping automatique (singleton)
+ * Scraping tous les lundis à 18h00 et 19h50 (fuseau Atlantic/Reykjavik)
+ */
+export function ensureSchedulerStarted(): void {
+  if (schedulerStarted) return;
+  schedulerStarted = true;
+
+  const scheduler = new SchedulerService(
+    getScraperService(),
+    getCacheService()
+  );
+  scheduler.start();
 }

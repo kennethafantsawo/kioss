@@ -5,9 +5,12 @@
  */
 
 import { NextResponse } from 'next/server';
-import { getPharmacyController } from '@/server/container';
+import { getPharmacyController, ensureSchedulerStarted } from '@/server/container';
 
 export async function GET(request: Request) {
+  // Démarrer le scheduler au premier appel (singleton)
+  ensureSchedulerStarted();
+
   try {
     const { searchParams } = new URL(request.url);
     const forceRefresh = searchParams.get('refresh') === 'true';

@@ -128,7 +128,7 @@ export class ScraperService implements IScraperService {
    */
   private parsePharmacyCard(
     $: cheerio.CheerioAPI,
-    element: cheerio.Element
+    element: cheerio.AnyNode
   ): Pharmacy | null {
     const card = $(element);
 
