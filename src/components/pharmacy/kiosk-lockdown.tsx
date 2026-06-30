@@ -1,73 +1,41 @@
 /**
  * @component KioskLockdown
- * @description Verrouillage complet de l'écran kiosk.
- * Bloque TOUTES les interactions : souris, tactile, clavier,
- * empreinte digitale, menu contextuel, drag & drop, zoom, copier/coller.
- * Aucune interaction externe n'est possible avec l'écran.
+ * @description BOUCLIER KIOSK TOTAL.
+ * Un overlay invisible couvre 100% de l'écran (z-index: 9999999).
+ * AUCUNE interaction possible : ni souris, ni tactile, ni clavier, ni fingerprint.
+ * Zéro action. L'écran est en lecture seule absolue.
  */
 
 'use client';
 
 import { useEffect } from 'react';
 
-const BLOCKED_MOUSE_EVENTS: (keyof DocumentEventMap)[] = [
-  'mousedown',
-  'mouseup',
-  'mousemove',
-  'mouseover',
-  'mouseout',
-  'mouseenter',
-  'mouseleave',
-  'click',
-  'dblclick',
-  'contextmenu',
-  'wheel',
-  'dragstart',
-  'drag',
-  'dragend',
-  'dragover',
-  'dragenter',
-  'dragleave',
-  'drop',
-  'pointerdown',
-  'pointerup',
-  'pointermove',
-  'pointerover',
-  'pointerout',
-  'pointerenter',
-  'pointerleave',
-  'pointercancel',
-  'gotpointercapture',
-  'lostpointercapture',
-  'mousedown',
-  'touchstart',
-  'touchmove',
-  'touchend',
-  'touchcancel',
-];
+/** Tous les événements à tuer */
+const KILL_EVENTS = [
+  // Souris
+  'mousedown', 'mouseup', 'mousemove', 'mouseover', 'mouseout',
+  'mouseenter', 'mouseleave', 'click', 'dblclick', 'contextmenu',
+  'wheel', 'auxclick',
+  // Drag & Drop
+  'dragstart', 'drag', 'dragend', 'dragover', 'dragenter', 'dragleave', 'drop',
+  // Pointer
+  'pointerdown', 'pointerup', 'pointermove', 'pointerover', 'pointerout',
+  'pointerenter', 'pointerleave', 'pointercancel', 'gotpointercapture', 'lostpointercapture',
+  // Tactile
+  'touchstart', 'touchmove', 'touchend', 'touchcancel',
+  // Clavier
+  'keydown', 'keyup', 'keypress',
+  // Geste / zoom
+  'gesturestart', 'gesturechange', 'gestureend',
+  // Sélection / copie
+  'selectstart', 'selectionchange', 'copy', 'cut', 'paste',
+  // Focus / input
+  'focusin', 'focusout', 'beforeinput', 'input', 'change', 'submit', 'reset',
+  // Scroll
+  'scroll', 'wheel',
+] as const;
 
-const BLOCKED_KEYBOARD_EVENTS: (keyof DocumentEventMap)[] = [
-  'keydown',
-  'keyup',
-  'keypress',
-];
-
-const BLOCKED_WINDOW_EVENTS: (keyof WindowEventMap)[] = [
-  'contextmenu',
-  'dragover',
-  'drop',
-];
-
-function preventAll(e: Event) {
-  e.preventDefault();
-  e.stopPropagation();
-  e.stopImmediatePropagation();
-  return false;
-}
-
-function preventKeyboard(e: KeyboardEvent) {
-  // Bloquer TOUTES les touches, sans exception
-  // Y compris F5 (refresh), F12 (devtools), Ctrl+R, Ctrl+Shift+I, Alt+Tab, etc.
+function kill(e: Event): boolean {
   e.preventDefault();
   e.stopPropagation();
   e.stopImmediatePropagation();
@@ -76,127 +44,80 @@ function preventKeyboard(e: KeyboardEvent) {
 
 export function KioskLockdown() {
   useEffect(() => {
-    // 1. Bloquer tous les événements souris/tactile/pointeur sur le document
-    const mouseCleanup = BLOCKED_MOUSE_EVENTS.map((eventName) => {
-      document.addEventListener(eventName, preventAll, {
-        capture: true,
-        passive: false,
-      });
-      return () => {
-        document.removeEventListener(eventName, preventAll, { capture: true });
-      };
-    });
+    const cleanup: Array<() => void> = [];
 
-    // 2. Bloquer tous les événements clavier
-    const keyboardCleanup = BLOCKED_KEYBOARD_EVENTS.map((eventName) => {
-      document.addEventListener(eventName, preventKeyboard, {
-        capture: true,
-        passive: false,
-      });
-      return () => {
-        document.removeEventListener(eventName, preventKeyboard, { capture: true });
-      };
-    });
+    // Tuer tous les événements sur document (capture phase = le plus tôt possible)
+    for (const evt of KILL_EVENTS) {
+      document.addEventListener(evt, kill, { capture: true, passive: false });
+      cleanup.push(() => document.removeEventListener(evt, kill, { capture: true }));
+    }
 
-    // 3. Bloquer les événements fenêtre
-    const windowCleanup = BLOCKED_WINDOW_EVENTS.map((eventName) => {
-      window.addEventListener(eventName, preventAll, {
-        capture: true,
-        passive: false,
-      });
-      return () => {
-        window.removeEventListener(eventName, preventAll, { capture: true });
-      };
-    });
+    // Tuer aussi sur window pour les événements qui ne propagent pas au document
+    for (const evt of ['contextmenu', 'dragover', 'drop', 'resize'] as const) {
+      window.addEventListener(evt, kill, { capture: true, passive: false });
+      cleanup.push(() => window.removeEventListener(evt, kill, { capture: true }));
+    }
 
-    // 4. Bloquer la sélection de texte
-    document.addEventListener('selectstart', preventAll, { capture: true, passive: false });
-    const selectStartCleanup = () => {
-      document.removeEventListener('selectstart', preventAll, { capture: true });
-    };
+    // Bloquer le scroll du document
+    document.documentElement.style.overflow = 'hidden';
+    document.documentElement.style.overscrollBehavior = 'none';
+    document.body.style.overflow = 'hidden';
+    document.body.style.overscrollBehavior = 'none';
 
-    // 5. Bloquer le copier/couper/coller
-    document.addEventListener('copy', preventAll, { capture: true, passive: false });
-    document.addEventListener('cut', preventAll, { capture: true, passive: false });
-    document.addEventListener('paste', preventAll, { capture: true, passive: false });
-    const copyCleanup = () => {
-      document.removeEventListener('copy', preventAll, { capture: true });
-      document.removeEventListener('cut', preventAll, { capture: true });
-      document.removeEventListener('paste', preventAll, { capture: true });
-    };
-
-    // 6. Bloquer le contrôle biométrique / WebAuthn
+    // Désactiver WebAuthn / biométrique
     if (typeof PublicKeyCredential !== 'undefined') {
       try {
-        // Tente de bloquer les requêtes d'authentification biométrique
-        const originalCreate = PublicKeyCredential.prototype.constructor;
+        const orig = PublicKeyCredential.prototype.constructor;
         Object.defineProperty(window, 'PublicKeyCredential', {
-          value: class extends originalCreate {
-            static async create(
-              ...args: Parameters<typeof PublicKeyCredential.create>
-            ) {
-              throw new DOMException(
-                'Biométrique désactivée en mode kiosk',
-                'NotAllowedError'
-              );
+          value: class extends orig {
+            static async create() {
+              throw new DOMException('Kiosk', 'NotAllowedError');
             }
-            static async get(
-              ...args: Parameters<typeof PublicKeyCredential.get>
-            ) {
-              throw new DOMException(
-                'Biométrique désactivée en mode kiosk',
-                'NotAllowedError'
-              );
+            static async get() {
+              throw new DOMException('Kiosk', 'NotAllowedError');
             }
           },
           writable: false,
           configurable: false,
         });
-      } catch {
-        // Silently fail - some browsers don't allow overriding
-      }
+      } catch { /* ignore */ }
     }
 
-    // 7. Bloquer la détection d'empreinte digitale via CSS et JS
-    // Désactiver les API de navigation qui pourraient être utilisées pour le fingerprinting
-    try {
-      Object.defineProperty(navigator, 'webdriver', { get: () => false });
-    } catch {
-      // ignore
-    }
-
-    // 8. Empêcher le zoom par pinch
-    document.addEventListener(
-      'gesturestart',
-      preventAll,
-      { capture: true, passive: false }
-    );
-    document.addEventListener(
-      'gesturechange',
-      preventAll,
-      { capture: true, passive: false }
-    );
-    document.addEventListener(
-      'gestureend',
-      preventAll,
-      { capture: true, passive: false }
-    );
-    const gestureCleanup = () => {
-      document.removeEventListener('gesturestart', preventAll, { capture: true });
-      document.removeEventListener('gesturechange', preventAll, { capture: true });
-      document.removeEventListener('gestureend', preventAll, { capture: true });
-    };
+    // Anti-fingerprinting navigator
+    try { Object.defineProperty(navigator, 'webdriver', { get: () => false }); } catch { /* ignore */ }
 
     return () => {
-      mouseCleanup.forEach((fn) => fn());
-      keyboardCleanup.forEach((fn) => fn());
-      windowCleanup.forEach((fn) => fn());
-      selectStartCleanup();
-      copyCleanup();
-      gestureCleanup();
+      cleanup.forEach(fn => fn());
+      document.documentElement.style.overflow = '';
+      document.documentElement.style.overscrollBehavior = '';
+      document.body.style.overflow = '';
+      document.body.style.overscrollBehavior = '';
     };
   }, []);
 
-  // Ce composant ne rend rien visuellement
-  return null;
+  // Overlay invisible qui couvre 100% de l'écran - style inline = priorité maximale
+  return (
+    <div
+      aria-hidden="true"
+      style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100vw',
+        height: '100vh',
+        zIndex: 9999999,
+        backgroundColor: 'transparent',
+        cursor: 'none',
+        pointerEvents: 'auto',
+        touchAction: 'none',
+        userSelect: 'none',
+        WebkitUserSelect: 'none',
+        WebkitTouchCallout: 'none',
+        WebkitTapHighlightColor: 'transparent',
+        msContentZooming: 'none',
+        overscrollBehavior: 'none',
+        touchEvents: 'none',
+      }}
+    />
+  );
 }

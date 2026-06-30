@@ -113,56 +113,32 @@
 }
 
 @layer base {
-  * {
-    @apply border-border outline-ring/50;
-    /* Verrouillage total kiosk - aucune interaction */
-    cursor: none !important;
-    -webkit-user-select: none !important;
-    user-select: none !important;
-    pointer-events: none !important;
-    -webkit-touch-callout: none !important;
-    -webkit-tap-highlight-color: transparent !important;
-    touch-action: none !important;
-    -webkit-touch-action: none !important;
-  }
-
+  /* ===== KIOSK TOTAL LOCKDOWN ===== */
+  /* Aucune interaction : ni souris, ni tactile, ni clavier, ni sélection */
   html, body {
     @apply bg-background text-foreground;
     cursor: none !important;
     -webkit-user-select: none !important;
     user-select: none !important;
-    pointer-events: none !important;
     overflow: hidden !important;
     touch-action: none !important;
     -webkit-touch-action: none !important;
     -webkit-touch-callout: none !important;
     -webkit-tap-highlight-color: transparent !important;
-    /* Empêcher le zoom */
     -ms-content-zooming: none !important;
-    /* Empêcher le pan */
     overscroll-behavior: none !important;
   }
 
-  /* Bloquer tous les éléments interactifs */
-  a, button, input, textarea, select,
-  [role="button"], [role="link"], [role="textbox"],
-  label, details, summary, dialog, video, audio,
-  iframe, embed, object, canvas, svg {
+  /* Désactiver le curseur et la sélection partout */
+  *, *::before, *::after {
     cursor: none !important;
-    pointer-events: none !important;
     -webkit-user-select: none !important;
     user-select: none !important;
-    touch-action: none !important;
+    -webkit-touch-callout: none !important;
     -webkit-tap-highlight-color: transparent !important;
   }
 
-  /* Bloquer le survol (hover) sur tout */
-  *, *::before, *::after {
-    cursor: none !important;
-    pointer-events: none !important;
-  }
-
-  /* Empêcher la sélection */
+  /* Empêcher la sélection visuelle */
   ::selection {
     background: transparent !important;
     color: inherit !important;
