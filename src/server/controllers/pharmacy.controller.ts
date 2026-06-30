@@ -2,8 +2,7 @@
  * @module PharmacyController
  * @description Contrôleur principal de l'API pharmacies
  * Orchestre les services de scraping et de cache
- * Principe SRP : gère uniquement la logique métier de l'API
- * Principe DIP : dépend des abstractions (interfaces)
+ * Utilise un fallback statique quand le scraping échoue
  */
 
 import type {
@@ -12,6 +11,7 @@ import type {
   ICacheService,
   SyncResult,
 } from '../interfaces';
+import { FALLBACK_PHARMACIES } from '../data/fallback-pharmacies';
 import { createLogger } from '../utils/logger';
 
 export class PharmacyController implements IPharmacyController {
@@ -19,9 +19,6 @@ export class PharmacyController implements IPharmacyController {
   private cacheService: ICacheService<SyncResult>;
   private logger = createLogger('PharmacyController');
 
-  /**
-   * Injection de dépendances via le constructeur (DIP)
-   */
   constructor(
     scraperService: IScraperService,
     cacheService: ICacheService<SyncResult>
@@ -32,12 +29,14 @@ export class PharmacyController implements IPharmacyController {
 
   /**
    * Récupère la liste des pharmacies
-   * Utilise le cache si disponible et valide, sinon scrappe
+   * 1. Cache si disponible
+   * 2. Sinon scraping
+   * 3. Sinon fallback statique
    */
   async getPharmacies(forceRefresh: boolean = false): Promise<SyncResult> {
     this.logger.info('Récupération des pharmacies', { forceRefresh });
 
-    // Retourner le cache si disponible et pas de rafraîchissement forcé
+    // 1. Retourner le cache si disponible
     if (!forceRefresh) {
       const cached = this.cacheService.get();
       if (cached) {
@@ -46,16 +45,33 @@ export class PharmacyController implements IPharmacyController {
       }
     }
 
-    // Scraper les données fraîches
-    this.logger.info('Scraping des données fraîches...');
+    // 2. Tenter le scraping
+    this.logger.info('Tentative de scraping...');
     const result = await this.scraperService.scrape();
 
-    // Mettre en cache uniquement en cas de succès
+    // Si le scraping a réussi, utiliser et cacher les données
     if (result.success && result.pharmacies.length > 0) {
       this.cacheService.set(result);
+      return result;
     }
 
-    return result;
+    // 3. Fallback : données statiques
+    this.logger.warn('Scraping échoué, utilisation des données de secours', {
+      scrapeError: result.error,
+    });
+
+    const fallbackResult: SyncResult = {
+      success: true,
+      pharmacies: FALLBACK_PHARMACIES,
+      totalFound: FALLBACK_PHARMACIES.length,
+      scrapedAt: new Date().toISOString(),
+      durationMs: result.durationMs,
+    };
+
+    // Cacher aussi le fallback
+    this.cacheService.set(fallbackResult);
+
+    return fallbackResult;
   }
 
   /**
