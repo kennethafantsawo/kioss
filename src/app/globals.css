@@ -115,19 +115,61 @@
 @layer base {
   * {
     @apply border-border outline-ring/50;
+    /* Verrouillage total kiosk - aucune interaction */
+    cursor: none !important;
+    -webkit-user-select: none !important;
+    user-select: none !important;
+    pointer-events: none !important;
+    -webkit-touch-callout: none !important;
+    -webkit-tap-highlight-color: transparent !important;
+    touch-action: none !important;
+    -webkit-touch-action: none !important;
   }
-  body {
+
+  html, body {
     @apply bg-background text-foreground;
-    cursor: none;
-    -webkit-user-select: none;
-    user-select: none;
-    pointer-events: none;
-    overflow: hidden;
-    touch-action: none;
+    cursor: none !important;
+    -webkit-user-select: none !important;
+    user-select: none !important;
+    pointer-events: none !important;
+    overflow: hidden !important;
+    touch-action: none !important;
+    -webkit-touch-action: none !important;
+    -webkit-touch-callout: none !important;
+    -webkit-tap-highlight-color: transparent !important;
+    /* Empêcher le zoom */
+    -ms-content-zooming: none !important;
+    /* Empêcher le pan */
+    overscroll-behavior: none !important;
   }
-  a, button, input, [role="button"] {
-    cursor: none;
-    pointer-events: none;
+
+  /* Bloquer tous les éléments interactifs */
+  a, button, input, textarea, select,
+  [role="button"], [role="link"], [role="textbox"],
+  label, details, summary, dialog, video, audio,
+  iframe, embed, object, canvas, svg {
+    cursor: none !important;
+    pointer-events: none !important;
+    -webkit-user-select: none !important;
+    user-select: none !important;
+    touch-action: none !important;
+    -webkit-tap-highlight-color: transparent !important;
+  }
+
+  /* Bloquer le survol (hover) sur tout */
+  *, *::before, *::after {
+    cursor: none !important;
+    pointer-events: none !important;
+  }
+
+  /* Empêcher la sélection */
+  ::selection {
+    background: transparent !important;
+    color: inherit !important;
+  }
+  ::-moz-selection {
+    background: transparent !important;
+    color: inherit !important;
   }
 }
 
@@ -150,10 +192,7 @@
 .kiosk-scroll-track {
   animation: kiosk-scroll var(--scroll-duration, 120s) linear infinite;
   will-change: transform;
-}
-
-.kiosk-scroll-track:hover {
-  animation-play-state: paused;
+  /* AUCUNE pause - le défilement ne s'arrête jamais */
 }
 
 /* Kiosk clock pulse */

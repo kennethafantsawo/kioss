@@ -22,6 +22,7 @@ export const viewport: Viewport = {
   maximumScale: 1,
   userScalable: false,
   themeColor: '#047857',
+  interactiveWidget: 'resizes-content',
 };
 
 export const metadata: Metadata = {
@@ -67,6 +68,12 @@ export default function RootLayout({
       <head>
         <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
+        {/* Verrouillage kiosk - aucune interaction */}
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="format-detection" content="telephone=no" />
+        <meta name="format-detection" content="email=no" />
+        <meta name="format-detection" content="address=no" />
+        <meta name="format-detection" content="date=no" />
       </head>
       <body
         className={`${montserrat.variable} font-sans antialiased bg-gray-50 text-gray-900`}

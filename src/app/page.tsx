@@ -11,6 +11,7 @@ import { KioskHeader } from '@/components/pharmacy/kiosk-header';
 import { KioskScrollList } from '@/components/pharmacy/kiosk-scroll-list';
 import { KioskFooter } from '@/components/pharmacy/kiosk-footer';
 import { EmptyState } from '@/components/pharmacy/empty-state';
+import { KioskLockdown } from '@/components/pharmacy/kiosk-lockdown';
 
 export default function Home() {
   const {
@@ -21,7 +22,10 @@ export default function Home() {
   } = usePharmacies();
 
   return (
-    <div className="h-screen flex flex-col bg-gray-50 overflow-hidden">
+    <>
+      {/* Verrouillage complet - aucune interaction possible */}
+      <KioskLockdown />
+      <div className="h-screen flex flex-col bg-gray-50 overflow-hidden">
       {/* Header fixe */}
       <KioskHeader
         totalPharmacies={pharmacies.length}
@@ -51,5 +55,6 @@ export default function Home() {
       {/* Footer fixe */}
       <KioskFooter />
     </div>
+    </>
   );
 }

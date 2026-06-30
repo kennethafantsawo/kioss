@@ -63,3 +63,42 @@ Stage Summary:
 - Défilement infini fluide des 51 pharmacies (~140s par cycle complet)
 - Horloge temps réel avec séparateur clignotant
 - Layout optimisé pour écran vertical (header fixe + scroll + footer fixe)
+---
+Task ID: 1
+Agent: Main Agent
+Task: Retirer totalement le contrôle souris, tactile, clavier et biométrique (fingerprint) de la page kiosk
+
+Work Log:
+- Created KioskLockdown component (src/components/pharmacy/kiosk-lockdown.tsx) that blocks ALL events via JS:
+  - Mouse events (mousedown, mouseup, mousemove, click, dblclick, contextmenu, wheel, drag*)
+  - Pointer events (pointerdown, pointerup, pointermove, pointerover, etc.)
+  - Touch events (touchstart, touchmove, touchend, touchcancel)
+  - Keyboard events (keydown, keyup, keypress) - blocks ALL keys including F5, F12, Ctrl+R, etc.
+  - Gesture events (gesturestart, gesturechange, gestureend) for pinch zoom
+  - Selection (selectstart), Copy/Cut/Paste
+  - WebAuthn/Biometric API override (PublicKeyCredential.create/get throw NotAllowedError)
+  - Navigator.webdriver fingerprint protection
+- Updated globals.css with comprehensive CSS lockdown:
+  - cursor:none !important on ALL elements (*, *::before, *::after)
+  - pointer-events:none !important on ALL elements
+  - user-select:none !important, -webkit-user-select:none !important
+  - touch-action:none !important, -webkit-touch-action:none !important
+  - -webkit-touch-callout:none !important
+  - -webkit-tap-highlight-color:transparent !important
+  - -ms-content-zooming:none !important
+  - overscroll-behavior:none !important
+  - ::selection and ::-moz-selection made transparent
+  - REMOVED hover pause on scroll track (animation never stops)
+- Updated layout.tsx with kiosk lockdown meta tags:
+  - mobile-web-app-capable
+  - format-detection: telephone=no, email=no, address=no, date=no
+- Updated page.tsx to include KioskLockdown component
+- Verified with browser: page renders correctly, no console errors, no runtime errors
+
+Stage Summary:
+- Kiosk is now fully locked down - NO mouse, touch, keyboard, fingerprint, or any external interaction possible
+- CSS uses !important on all blocking rules for maximum specificity
+- JS KioskLockdown uses capture:true + passive:false for earliest possible event interception
+- Scroll animation runs continuously without any pause (hover pause removed)
+- Page verified working in browser with zero errors
+
