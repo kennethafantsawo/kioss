@@ -1,6 +1,9 @@
 /**
- * @module middleware
+ * @module proxy
  * @description Détection automatique du device et redirection.
+ *
+ * Next.js 16 : le fichier `middleware.ts` est déprécié au profit de `proxy.ts`.
+ * La fonction exportée doit s'appeler `proxy` (au lieu de `middleware`).
  *
  * - Mobile (iPhone, Android, etc.) accédant à `/` → redirigé vers `/mobile`
  * - Desktop accédant à `/` → garde la page kiosk (lecture seule, défilement auto)
@@ -18,7 +21,7 @@ import type { NextRequest } from 'next/server';
 const MOBILE_UA_PATTERN =
   /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|mobile|CriOS|FxiOS/i;
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // On n'agit que sur la racine `/` (page kiosk par défaut)
