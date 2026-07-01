@@ -62,6 +62,15 @@ echo "📦 收集构建产物到 $BUILD_DIR..."
 if [ -d ".next/standalone" ]; then
     echo "  - 复制 .next/standalone"
     cp -r .next/standalone "$BUILD_DIR/next-service-dist/"
+
+    # ⚠️ 删除 Next.js 自动复制的 .env 文件
+    # 该文件包含开发环境的 DATABASE_URL=file:/home/z/my-project/db/custom.db
+    # 在生产环境此路径不存在，会误导 Prisma/Next.js
+    # 生产环境的 DATABASE_URL 由 start.sh 在启动时通过环境变量注入
+    if [ -f "$BUILD_DIR/next-service-dist/.env" ]; then
+        echo "  - 移除开发环境 .env（避免生产环境路径冲突）"
+        rm -f "$BUILD_DIR/next-service-dist/.env"
+    fi
 fi
 
 # 复制 Next.js 静态文件

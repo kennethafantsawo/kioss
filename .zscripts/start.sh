@@ -53,14 +53,16 @@ cd "$BUILD_DIR" || exit 1
 
 ls -lah
 
-DEFAULT_PACKAGED_DB_PATH="/app/db/custom.db"
+# 打包数据库的路径：相对于 start.sh 所在目录（即构建产物根目录）
+# 不再硬编码 /app/db/custom.db，以便部署到任意路径都能正常工作
+DEFAULT_PACKAGED_DB_PATH="$BUILD_DIR/db/custom.db"
 DEFAULT_PACKAGED_DATABASE_URL="file:$DEFAULT_PACKAGED_DB_PATH"
 
 # 启动 Next.js 服务器
 if [ -f "./next-service-dist/server.js" ]; then
     echo "🚀 启动 Next.js 服务器..."
     cd next-service-dist/ || exit 1
-    
+
     # 设置环境变量
     export NODE_ENV=production
     export PORT="${PORT:-3000}"
