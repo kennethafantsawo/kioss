@@ -13,7 +13,7 @@
 /** URL de base du site (pour canonical, sitemap, Open Graph) */
 export const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, '') ||
-  'https://kioss.vercel.app';
+  'https://pharmaguard-lome.vercel.app';
 
 /** Nom commercial du site */
 export const SITE_NAME = 'Pharmacies de Garde au Togo';
