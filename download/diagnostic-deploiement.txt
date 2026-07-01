@@ -1,0 +1,183 @@
+================================================================
+  DIAGNOSTIC DEPLOIEMENT — Application "Pharmacies de Garde Togo"
+================================================================
+Date : 2026-07-01
+Projet : Next.js 16.1.3 standalone + Caddy + SQLite (Prisma)
+Auteur : Diagnostic automatique
+
+----------------------------------------------------------------
+CONTEXTE — Architecture de déploiement
+----------------------------------------------------------------
+
+Le workspace contient 3 scripts de déploiement dans .zscripts/ :
+
+  Script                  Role
+  ----------------------  ----------------------------------------
+  build.sh                Compile Next.js (next build), copie
+                          standalone + static + public + DB +
+                          Caddyfile dans un tar.gz
+  start.sh                Sur la VM cible : demarre Next.js +
+                          mini-services + Caddy
+  mini-services-start.sh  Demarre les mini-services (aucun ici,
+                          le dossier mini-services/ ne contient
+                          qu'un .gitkeep)
+
+Flux de déploiement :
+
+  build.sh  -->  tar.gz  -->  extrait sur VM  -->  start.sh
+                                                          |
+                                              Next.js + Caddy
+
+
+----------------------------------------------------------------
+BUG #1 — Coupable principal : chemin DB code en dur
+----------------------------------------------------------------
+
+LIGNE CONCERNEE (avant correction) dans .zscripts/start.sh:56
+
+  DEFAULT_PACKAGED_DB_PATH="/app/db/custom.db"     # chemin absolu fige
+  DEFAULT_PACKAGED_DATABASE_URL="file:$DEFAULT_PACKAGED_DB_PATH"
+
+
+POURQUOI CA MARCHAIT EN DEV ET PAS EN PROD
+
+Sur la plateforme de deploiement, voici ce qui se passe reellement :
+
+  1. build.sh genere /tmp/build_fullstack_XXX.tar.gz
+  2. La plateforme extrait ce tar dans un dossier TEMPORAIRE du
+     genre /tmp/some-uuid/ ou /home/agent/work/
+  3. Elle execute ensuite "sh ./start.sh" depuis ce dossier
+
+Au moment ou start.sh:73 execute :
+
+  if [ ! -f "/app/db/custom.db" ]; then    # cherche dans /app/ qui
+                                            # N'EXISTE PAS
+      echo "[X] 未找到打包后的数据库文件 /app/db/custom.db"
+      exit 1                                 # ARRET IMMEDIAT
+  fi
+
+Le script s'arrete net AVANT meme de lancer Next.js. Resultat :
+
+  [X] Aucun processus Next.js demarre
+  [X] Caddy n'a personne a proxy vers localhost:3000
+      -> HTTP 502 Bad Gateway cote navigateur
+  [OK] Le tar etait bon, le build etait bon, mais le runtime
+       ne pouvait jamais demarrer
+
+
+TRACE EXACTE OBSERVEE PENDANT LE TEST
+
+  🚀 启动 Next.js 服务器...
+  ❌ 未找到打包后的数据库文件 /app/db/custom.db
+     为避免生产环境启动到空数据库，启动已终止
+  --- Curl /api/pharmacies on :3000 ---
+  HTTP 000 size=0              <-- port ferme, rien ne tourne
+  --- Curl /api/pharmacies on :81 (via caddy) ---
+  HTTP 502 size=1364           <-- Caddy tourne mais ne trouve
+                                   pas l'upstream
+
+
+LA CORRECTION (deja appliquee)
+
+  DEFAULT_PACKAGED_DB_PATH="$BUILD_DIR/db/custom.db"   # relatif au script
+
+$BUILD_DIR est calcule juste au-dessus (start.sh:52) comme
+$(dirname "$0"). Donc la DB est toujours trouvee quel que soit
+le dossier ou le tar est extrait.
+
+
+----------------------------------------------------------------
+BUG #2 — Secondaire mais sournois : fuite du .env dev
+----------------------------------------------------------------
+
+MECANISME
+
+Quand tu fais "next build" avec output: "standalone", Next.js
+copie AUTOMATIQUEMENT le .env du projet dans
+.next/standalone/.env. C'est un comportement documente mais
+piegeux.
+
+
+LE CONTENU DU .env A LA RACINE DE TON PROJET
+
+  DATABASE_URL=file:/home/z/my-project/db/custom.db
+
+C'est le chemin de ton ENVIRONNEMENT DE DEV. Quand ce fichier
+est copie tel quel dans le build standalone deploye :
+
+  Cas                          start.sh exporte            .env dit                                Resultat
+  ---------------------------  --------------------------  ---------------------------------------  --------
+  Sans DATABASE_URL externe    $BUILD_DIR/db/custom.db     file:/home/z/my-project/db/custom.db     Conflit - Prisma peut lire l'un ou l'autre
+  Avec DATABASE_URL externe    Ta valeur (correcte)        file:/home/z/my-project/db/custom.db     Conflit selon l'ordre de chargement
+
+
+LE PIEGE SPECIFIQUE
+
+Next.js standalone lit .env AUTOMATIQUEMENT au demarrage de
+server.js. Si tu n'avais pas le bug #1, Prisma aurait pu
+essayer d'ouvrir /home/z/my-project/db/custom.db sur la VM
+de prod - chemin qui n'existe pas la-bas - et planter avec :
+
+  PrismaClientInitializationError: Can't reach database server
+  at `file:/home/z/my-project/db/custom.db`
+
+
+LA CORRECTION (deja appliquee dans build.sh:66-73)
+
+  if [ -f "$BUILD_DIR/next-service-dist/.env" ]; then
+      echo "  - 移除开发环境 .env（避免生产环境路径冲突）"
+      rm -f "$BUILD_DIR/next-service-dist/.env"
+  fi
+
+On supprime le .env du standalone APRES la copie. La
+DATABASE_URL est alors exclusivement fournie par start.sh
+via "export DATABASE_URL=...", sans conflit possible.
+
+
+----------------------------------------------------------------
+VALIDATION EFFECTUEE
+----------------------------------------------------------------
+
+J'ai teste les deux scenarios apres correction :
+
+  Test                        Chemin d'extraction                        Next.js        API /pharmacies    Caddy :81
+  --------------------------  -----------------------------------------  -------------  -----------------  ----------
+  Chemin imbrique aleatoire   /home/z/deploy_random_path/some/nested/    OK Ready 89ms  HTTP 200           HTTP 200
+  Chemin type /app/           /home/z/deploy_app_simulated/              OK Ready       HTTP 200           HTTP 200
+
+Les deux demarrent correctement maintenant, peu importe ou le
+tar est extrait.
+
+
+----------------------------------------------------------------
+FICHIERS MODIFIES
+----------------------------------------------------------------
+
+1. /home/z/my-project/.zscripts/start.sh
+   Ligne 56-58 :
+     AVANT : DEFAULT_PACKAGED_DB_PATH="/app/db/custom.db"
+     APRES : DEFAULT_PACKAGED_DB_PATH="$BUILD_DIR/db/custom.db"
+
+2. /home/z/my-project/.zscripts/build.sh
+   Lignes 66-73 (nouveau bloc) :
+     Suppression du .env dev du standalone apres copie
+
+
+----------------------------------------------------------------
+CONSEILS POUR LA SUITE
+----------------------------------------------------------------
+
+1. RE-DEPLOIE : tes scripts .zscripts/start.sh et
+   .zscripts/build.sh sont deja corriges dans /home/z/my-project/
+
+2. Si tu veux voir les logs de deploiement en direct, regarde
+   specifiquement les lignes contenant "❌" ou "启动失败"
+
+3. Pour eviter ce genre de souci a l'avenir, evite tout chemin
+   absolu code en dur dans les scripts shell - utilise toujours
+   $(dirname "$0") ou des variables d'environnement
+
+
+================================================================
+  FIN DU DIAGNOSTIC
+================================================================
