@@ -113,40 +113,45 @@
 }
 
 @layer base {
-  /* ===== KIOSK TOTAL LOCKDOWN ===== */
-  /* Aucune interaction : ni souris, ni tactile, ni clavier, ni sélection */
+  /* Base styles communs (toutes pages) */
   html, body {
     @apply bg-background text-foreground;
-    cursor: none !important;
-    -webkit-user-select: none !important;
-    user-select: none !important;
-    overflow: hidden !important;
-    touch-action: none !important;
-    -webkit-touch-action: none !important;
-    -webkit-touch-callout: none !important;
-    -webkit-tap-highlight-color: transparent !important;
-    -ms-content-zooming: none !important;
-    overscroll-behavior: none !important;
   }
+}
 
-  /* Désactiver le curseur et la sélection partout */
-  *, *::before, *::after {
-    cursor: none !important;
-    -webkit-user-select: none !important;
-    user-select: none !important;
-    -webkit-touch-callout: none !important;
-    -webkit-tap-highlight-color: transparent !important;
-  }
+/* ===== KIOSK TOTAL LOCKDOWN ===== */
+/* Appliqué UNIQUEMENT quand la classe .kiosk-mode est présente sur <html> ou <body>
+   (i.e. sur la page kiosk /), pour ne pas bloquer la page mobile /mobile. */
+html.kiosk-mode, html.kiosk-mode body {
+  cursor: none !important;
+  -webkit-user-select: none !important;
+  user-select: none !important;
+  overflow: hidden !important;
+  touch-action: none !important;
+  -webkit-touch-action: none !important;
+  -webkit-touch-callout: none !important;
+  -webkit-tap-highlight-color: transparent !important;
+  -ms-content-zooming: none !important;
+  overscroll-behavior: none !important;
+}
 
-  /* Empêcher la sélection visuelle */
-  ::selection {
-    background: transparent !important;
-    color: inherit !important;
-  }
-  ::-moz-selection {
-    background: transparent !important;
-    color: inherit !important;
-  }
+/* Désactiver le curseur et la sélection partout — seulement en mode kiosk */
+html.kiosk-mode *, html.kiosk-mode *::before, html.kiosk-mode *::after {
+  cursor: none !important;
+  -webkit-user-select: none !important;
+  user-select: none !important;
+  -webkit-touch-callout: none !important;
+  -webkit-tap-highlight-color: transparent !important;
+}
+
+/* Empêcher la sélection visuelle — seulement en mode kiosk */
+html.kiosk-mode ::selection {
+  background: transparent !important;
+  color: inherit !important;
+}
+html.kiosk-mode ::-moz-selection {
+  background: transparent !important;
+  color: inherit !important;
 }
 
 /* ===== KIOSK MODE - Infinite Scroll Animation ===== */

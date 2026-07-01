@@ -1,12 +1,14 @@
 /**
  * @module ScraperService
  * @description Service de données pharmacies de garde au Togo.
- * Utilise les données de secours en mode déployé.
+ * Source principale : données scrapées depuis annuairestogo.com (48 pharmacies).
+ * Fallback : données statiques de secours si le scraping est vide.
  * Principe SRP : unique responsabilité = fournir les données pharmacies
  * Principe DIP : dépend de l'interface IScraperService
  */
 
 import type { Pharmacy, SyncResult, IScraperService } from '../interfaces';
+import { SCRAPED_PHARMACIES } from '../data/scraped-pharmacies';
 import { FALLBACK_PHARMACIES } from '../data/fallback-pharmacies';
 import { createLogger } from '../utils/logger';
 
@@ -21,7 +23,19 @@ export class ScraperService implements IScraperService {
     this.logger.info('Chargement des pharmacies de garde');
 
     try {
-      const pharmacies: Pharmacy[] = FALLBACK_PHARMACIES.map((p) => ({
+      // Source principale : pharmacies scrapées depuis annuairestogo.com
+      // Fallback : pharmacies statiques si scraping vide
+      const source =
+        SCRAPED_PHARMACIES.length > 0
+          ? SCRAPED_PHARMACIES
+          : FALLBACK_PHARMACIES;
+
+      this.logger.info('Source de données sélectionnée', {
+        source: SCRAPED_PHARMACIES.length > 0 ? 'scraped' : 'fallback',
+        count: source.length,
+      });
+
+      const pharmacies: Pharmacy[] = source.map((p) => ({
         ...p,
         scrapedAt: new Date(),
       }));

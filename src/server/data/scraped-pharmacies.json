@@ -1,0 +1,434 @@
+[
+  {
+    "id": "pharmacie-bon-secours",
+    "name": "Pharmacie BON SECOURS",
+    "address": "Rue du Grand Collège du Plateau - Cassablanca",
+    "phones": [
+      "70 45 76 74"
+    ],
+    "url": "https://www.annuairestogo.com/sante/pharmacies/pharmacie-bon-secours"
+  },
+  {
+    "id": "pharmacie-espace-vie",
+    "name": "Pharmacie ESPACE VIE",
+    "address": "Agoè Logopé, face bar Plaisir 2003",
+    "phones": [
+      "99 85 89 07"
+    ],
+    "url": "https://www.annuairestogo.com/sante/pharmacies/pharmacie-espace-vie"
+  },
+  {
+    "id": "pharmacie-o-grain-d-or",
+    "name": "Pharmacie O GRAIN D'OR",
+    "address": "Carrefour Zorrobar, Grand contournement",
+    "phones": [
+      "22 70 06 90"
+    ],
+    "url": "https://www.annuairestogo.com/sante/pharmacies/pharmacie-o-grain-d-or"
+  },
+  {
+    "id": "pharmacie-sanguera",
+    "name": "Pharmacie SANGUERA",
+    "address": "Près du Lycée de Sanguéra",
+    "phones": [
+      "70 42 80 80"
+    ],
+    "url": "https://www.annuairestogo.com/sante/pharmacies/pharmacie-sanguera"
+  },
+  {
+    "id": "pharmacie-la-shekinah",
+    "name": "Pharmacie LA SHEKINAH",
+    "address": "AGOE-NYIVE Qt Atiomé carrefour Amadenta",
+    "phones": [
+      "93 33 92 05"
+    ],
+    "url": "https://www.annuairestogo.com/sante/pharmacies/pharmacie-la-shekinah"
+  },
+  {
+    "id": "pharmacie-nelly-s",
+    "name": "Pharmacie NELLY'S",
+    "address": "Klémé Agokpanou, non loin du château d'eau, sur la voie de Ségbé à Sanguéra",
+    "phones": [
+      "92 01 11 00"
+    ],
+    "url": "https://www.annuairestogo.com/sante/pharmacies/pharmacie-nelly-s"
+  },
+  {
+    "id": "pharmacie-takoe",
+    "name": "Pharmacie TAKOE",
+    "address": "Agoè zongo côté opposé de la poste à côté du marché de zongo",
+    "phones": [
+      "96 80 09 77"
+    ],
+    "url": "https://www.annuairestogo.com/sante/pharmacies/pharmacie-takoe"
+  },
+  {
+    "id": "pharmacie-le-destin",
+    "name": "Pharmacie LE DESTIN",
+    "address": "A côté de l'Agence ECOBANK de Baguida",
+    "phones": [
+      "70 41 15 41"
+    ],
+    "url": "https://www.annuairestogo.com/sante/pharmacies/pharmacie-le-destin"
+  },
+  {
+    "id": "pharmacie-n-d-de-la-trinite",
+    "name": "Pharmacie N.D. DE LA TRINITE",
+    "address": "Sise au 20 boulevard de la Paix à Super Taco",
+    "phones": [
+      "98 46 50 88"
+    ],
+    "url": "https://www.annuairestogo.com/sante/pharmacies/pharmacie-n-d-de-la-trinite"
+  },
+  {
+    "id": "pharmacie-forever",
+    "name": "Pharmacie FOREVER",
+    "address": "Tokoin Forever, Face Garage Central Administratif",
+    "phones": [
+      "22 26 11 77"
+    ],
+    "url": "https://www.annuairestogo.com/sante/pharmacies/pharmacie-forever"
+  },
+  {
+    "id": "pharmacie-santa-madonna",
+    "name": "Pharmacie SANTA MADONNA",
+    "address": "Kégué, face maison Kader Coubadja &amp; Eglise catholique Ste Thèrèse",
+    "phones": [
+      "70 01 03 03"
+    ],
+    "url": "https://www.annuairestogo.com/sante/pharmacies/pharmacie-santa-madonna"
+  },
+  {
+    "id": "pharmacie-raoudha",
+    "name": "Pharmacie RAOUDHA",
+    "address": "Située au 4495 Boulevard Zio Hédzranawoe, derrière TOGO 2000",
+    "phones": [
+      "91 61 33 32"
+    ],
+    "url": "https://www.annuairestogo.com/sante/pharmacies/pharmacie-raoudha"
+  },
+  {
+    "id": "pharmacie-bien-etre",
+    "name": "Pharmacie BIEN ETRE",
+    "address": "100, bd du haho, hedzranawoe, à côté de la station d'essence total",
+    "phones": [
+      "22 26 45 16"
+    ],
+    "url": "https://www.annuairestogo.com/sante/pharmacies/pharmacie-bien-etre"
+  },
+  {
+    "id": "pharmacie-bethel",
+    "name": "Pharmacie BETHEL",
+    "address": "Rte d’Adidogomé",
+    "phones": [
+      "22 25 23 70"
+    ],
+    "url": "https://www.annuairestogo.com/sante/pharmacies/pharmacie-bethel"
+  },
+  {
+    "id": "pharmacie-des-ecoles",
+    "name": "Pharmacie DES ECOLES",
+    "address": "Face Lycée Technique Adidogomé et près du CEG, Route de Kpalimé",
+    "phones": [
+      "22 51 75 75"
+    ],
+    "url": "https://www.annuairestogo.com/sante/pharmacies/pharmacie-des-ecoles"
+  },
+  {
+    "id": "pharmacie-hosanna",
+    "name": "Pharmacie HOSANNA",
+    "address": "Carrefour Sagbado-Sémékonawo, en face de la station service SANOL",
+    "phones": [
+      "97 77 69 59"
+    ],
+    "url": "https://www.annuairestogo.com/sante/pharmacies/pharmacie-hosanna"
+  },
+  {
+    "id": "pharmacie-magnificat",
+    "name": "Pharmacie MAGNIFICAT",
+    "address": "Adidogomé yokoè Agblégan, rue de la pampa à 100m du palais royal de Yokoè",
+    "phones": [
+      "70 44 51 59"
+    ],
+    "url": "https://www.annuairestogo.com/sante/pharmacies/pharmacie-magnificat"
+  },
+  {
+    "id": "pharmacie-el-nissi",
+    "name": "Pharmacie EL-NISSI",
+    "address": "Rte Lomé-Kpalimé, carrefour Apédokoè-Gbomamé à 200 m de la station total d'Apédokoè",
+    "phones": [
+      "99 73 39 32"
+    ],
+    "url": "https://www.annuairestogo.com/sante/pharmacies/pharmacie-el-nissi"
+  },
+  {
+    "id": "pharmacie-mathilda",
+    "name": "Pharmacie MATHILDA",
+    "address": "Route PATASSE - Lomégan - ODEF",
+    "phones": [
+      "22 51 15 34"
+    ],
+    "url": "https://www.annuairestogo.com/sante/pharmacies/pharmacie-mathilda"
+  },
+  {
+    "id": "pharmacie-enouli",
+    "name": "Pharmacie ENOULI",
+    "address": "Station d’Agbalépédogan",
+    "phones": [
+      "22 25 90 68"
+    ],
+    "url": "https://www.annuairestogo.com/sante/pharmacies/pharmacie-enouli"
+  },
+  {
+    "id": "pharmacie-le-galien",
+    "name": "Pharmacie LE GALIEN",
+    "address": "Rue Pavée d'Adidoadin",
+    "phones": [
+      "22 51 71 71"
+    ],
+    "url": "https://www.annuairestogo.com/sante/pharmacies/pharmacie-le-galien"
+  },
+  {
+    "id": "pharmacie-des-roses",
+    "name": "Pharmacie DES ROSES",
+    "address": "Entreprise de l'union à côté de la station CM Vakpossito",
+    "phones": [
+      "70 42 37 72"
+    ],
+    "url": "https://www.annuairestogo.com/sante/pharmacies/pharmacie-des-roses"
+  },
+  {
+    "id": "pharmacie-volontas-dei",
+    "name": "Pharmacie VOLONTAS DEI",
+    "address": "Quartier Avédji, Carrefour \"SUN CITY\", face à l'ancien bar Sun City",
+    "phones": [
+      "70 42 23 60"
+    ],
+    "url": "https://www.annuairestogo.com/sante/pharmacies/pharmacie-volontas-dei"
+  },
+  {
+    "id": "pharmacie-betania",
+    "name": "Pharmacie BETANIA",
+    "address": "Rue Sito, Totsi-Glenkomé non loin de la salle des Témoins de Jéhovah",
+    "phones": [
+      "96 80 10 11"
+    ],
+    "url": "https://www.annuairestogo.com/sante/pharmacies/pharmacie-betania"
+  },
+  {
+    "id": "pharmacie-el-shammah",
+    "name": "Pharmacie El-SHAMMAH",
+    "address": "Sise à Amadahomé à côté de la Maison des Jeunes",
+    "phones": [
+      "70 43 25 85"
+    ],
+    "url": "https://www.annuairestogo.com/sante/pharmacies/pharmacie-el-shammah"
+  },
+  {
+    "id": "pharmacie-notre-dame-de-lourdes",
+    "name": "Pharmacie NOTRE DAME DE LOURDES",
+    "address": "Agoè Anomé, carrefour \"Deux lions\" près de l'église des Assemblées de Dieu",
+    "phones": [
+      "22 55 19 64"
+    ],
+    "url": "https://www.annuairestogo.com/sante/pharmacies/pharmacie-notre-dame-de-lourdes"
+  },
+  {
+    "id": "pharmacie-emma-s",
+    "name": "Pharmacie EMMAÜS",
+    "address": "Sur la route de Mission Tové à côté du bar Solidarité",
+    "phones": [
+      "70 40 25 40"
+    ],
+    "url": "https://www.annuairestogo.com/sante/pharmacies/pharmacie-emma-s"
+  },
+  {
+    "id": "pharmacie-regina-pacis",
+    "name": "Pharmacie REGINA PACIS",
+    "address": "Adétikopé, Rte National N°1 près du bar Sous l'Antenne",
+    "phones": [
+      "70 45 98 58"
+    ],
+    "url": "https://www.annuairestogo.com/sante/pharmacies/pharmacie-regina-pacis"
+  },
+  {
+    "id": "pharmacie-boulevard",
+    "name": "Pharmacie BOULEVARD",
+    "address": "Bd. Du 13 Janv. Doulassamé",
+    "phones": [
+      "22 21 65 49"
+    ],
+    "url": "https://www.annuairestogo.com/sante/pharmacies/pharmacie-boulevard"
+  },
+  {
+    "id": "pharmacie-kpehenou",
+    "name": "Pharmacie KPEHENOU",
+    "address": "Boulevard HOUPHOUET - BOIGNY",
+    "phones": [
+      "22 21 32 24"
+    ],
+    "url": "https://www.annuairestogo.com/sante/pharmacies/pharmacie-kpehenou"
+  },
+  {
+    "id": "pharmacie-de-kodjoviakope",
+    "name": "Pharmacie de KODJOVIAKOPE",
+    "address": "Avenue Duisbourg",
+    "phones": [
+      "22 21 89 90"
+    ],
+    "url": "https://www.annuairestogo.com/sante/pharmacies/pharmacie-de-kodjoviakope"
+  },
+  {
+    "id": "pharmacie-2000",
+    "name": "PHARMACIE 2000",
+    "address": "BE KPOTA près du Marché Dzifa",
+    "phones": [
+      "22 70 01 69"
+    ],
+    "url": "https://www.annuairestogo.com/sante/pharmacies/pharmacie-2000"
+  },
+  {
+    "id": "pharmacie-m-ba",
+    "name": "Pharmacie M'BA",
+    "address": "Agoè-Légbassito. Route de Mission Tové, 300 mètres après le marché de Légbassito",
+    "phones": [
+      "70 27 81 81"
+    ],
+    "url": "https://www.annuairestogo.com/sante/pharmacies/pharmacie-m-ba"
+  },
+  {
+    "id": "pharmacie-cristal",
+    "name": "Pharmacie CRISTAL",
+    "address": "2214, Bd. Félix houphet boigng face EPP Bé Aklassou, Bé Houvémé",
+    "phones": [
+      "22 20 90 91"
+    ],
+    "url": "https://www.annuairestogo.com/sante/pharmacies/pharmacie-cristal"
+  },
+  {
+    "id": "pharmacie-el-shadai",
+    "name": "Pharmacie EL SHADAI",
+    "address": "Brette de klikamé en face de STAO, Atikoumé",
+    "phones": [
+      "22 51 44 25"
+    ],
+    "url": "https://www.annuairestogo.com/sante/pharmacies/pharmacie-el-shadai"
+  },
+  {
+    "id": "pharmacie-hanoukope",
+    "name": "Pharmacie HANOUKOPE",
+    "address": "Rue de la nouvelle Marché, non loin de la Radio Kanal Fm, Hanoukopé",
+    "phones": [
+      "22 21 01 15"
+    ],
+    "url": "https://www.annuairestogo.com/sante/pharmacies/pharmacie-hanoukope"
+  },
+  {
+    "id": "pharmacie-la-grace",
+    "name": "Pharmacie LA GRACE",
+    "address": "Face au stade d'Agoe nyivé",
+    "phones": [
+      "22 25 91 65"
+    ],
+    "url": "https://www.annuairestogo.com/sante/pharmacies/pharmacie-la-grace"
+  },
+  {
+    "id": "pharmacie-la-patience",
+    "name": "Pharmacie LA PATIENCE",
+    "address": "DJAGBLE AYOKLEFE 300 mètres du CMS (Ayokléfé) 8 BP 8111 LOME",
+    "phones": [
+      "70 05 23 39"
+    ],
+    "url": "https://www.annuairestogo.com/sante/pharmacies/pharmacie-la-patience"
+  },
+  {
+    "id": "pharmacie-saint-esprit",
+    "name": "Pharmacie SAINT ESPRIT",
+    "address": "Rte Agoe-kégue, derriere le lycée Agoe EST",
+    "phones": [
+      "22 51 06 43"
+    ],
+    "url": "https://www.annuairestogo.com/sante/pharmacies/pharmacie-saint-esprit"
+  },
+  {
+    "id": "pharmacie-kelegougan",
+    "name": "Pharmacie KELEGOUGAN",
+    "address": "AGOE-Kelegougan,Voie du contournement, à 100m de la station TOTAL Kelegougan et du bar Obrigado",
+    "phones": [
+      "92 95 38 38"
+    ],
+    "url": "https://www.annuairestogo.com/sante/pharmacies/pharmacie-kelegougan"
+  },
+  {
+    "id": "pharmacie-sepopo",
+    "name": "Pharmacie SEPOPO",
+    "address": "ADAKPAME grand contournement, rond point Sawleto non loin de la station Somayaf",
+    "phones": [
+      "70 34 65 65"
+    ],
+    "url": "https://www.annuairestogo.com/sante/pharmacies/pharmacie-sepopo"
+  },
+  {
+    "id": "pharmacie-sag-biba",
+    "name": "PHARMACIE SAG'BIBA",
+    "address": "AGOE-Nane be à côté de la station T-Oil",
+    "phones": [
+      "91 83 87 83"
+    ],
+    "url": "https://www.annuairestogo.com/sante/pharmacies/pharmacie-sag-biba"
+  },
+  {
+    "id": "pharmacie-saint-pio",
+    "name": "Pharmacie SAINT PIO",
+    "address": "KLOBATEME, non loin du CMS Klobatèmé et près du complexe scolaire Le Bon Samaritain",
+    "phones": [
+      "93 40 40 40"
+    ],
+    "url": "https://www.annuairestogo.com/sante/pharmacies/pharmacie-saint-pio"
+  },
+  {
+    "id": "pharmacie-greenrx",
+    "name": "Pharmacie GREENRX",
+    "address": "Immeuble Mabiz Plaza Non loin du Rond oint Douane",
+    "phones": [
+      "92 96 19 19"
+    ],
+    "url": "https://www.annuairestogo.com/sante/pharmacies/pharmacie-greenrx"
+  },
+  {
+    "id": "pharmacie-veronique",
+    "name": "PHARMACIE VERONIQUE",
+    "address": "Avépozo en face de l'école nationale de gendarmerie d'Avépozo",
+    "phones": [
+      "92 03 40 40"
+    ],
+    "url": "https://www.annuairestogo.com/sante/pharmacies/pharmacie-veronique"
+  },
+  {
+    "id": "pharmacie-triomphe",
+    "name": "PHARMACIE TRIOMPHE",
+    "address": "Quartier Bokpokor, Route contournement, 300m de carrefour kpala",
+    "phones": [
+      "93 25 80 36"
+    ],
+    "url": "https://www.annuairestogo.com/sante/pharmacies/pharmacie-triomphe"
+  },
+  {
+    "id": "pharmacie-maa-la",
+    "name": "Pharmacie MAA-LA",
+    "address": "Agoè Démakpoè à côté de AZ Batiment non loin de l'école la Référence",
+    "phones": [
+      "90 10 60 92"
+    ],
+    "url": "https://www.annuairestogo.com/sante/pharmacies/pharmacie-maa-la"
+  },
+  {
+    "id": "pharmacie-aureole",
+    "name": "Pharmacie AUREOLE",
+    "address": "Agoè Tropkossimé au carrefour camp GP à 50m de l'EPP du camp GP",
+    "phones": [
+      "70 70 98 98"
+    ],
+    "url": "https://www.annuairestogo.com/sante/pharmacies/pharmacie-aureole"
+  }
+]

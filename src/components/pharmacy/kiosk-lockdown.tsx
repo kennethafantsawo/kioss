@@ -53,6 +53,11 @@ export function KioskLockdown() {
   useEffect(() => {
     const cleanup: Array<() => void> = [];
 
+    // Activer la classe CSS .kiosk-mode sur <html> (bloque scroll/touch/sélection
+    // via globals.css, mais SEULEMENT sur la page kiosk — la page /mobile y échappe)
+    document.documentElement.classList.add('kiosk-mode');
+    cleanup.push(() => document.documentElement.classList.remove('kiosk-mode'));
+
     // Tuer tous les événements sur document (capture phase = le plus tôt possible)
     for (const evt of KILL_EVENTS) {
       document.addEventListener(evt, kill, { capture: true, passive: false });
