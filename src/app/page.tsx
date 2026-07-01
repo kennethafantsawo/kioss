@@ -1,64 +1,94 @@
 /**
  * @page Home - MODE KIOSK
- * @description Affichage kiosk vertical : curseur masqué, pas d'interaction,
- * défilement automatique infini de la liste des pharmacies.
+ * @description Page d&apos;accueil kiosk : défilement automatique infini des
+ * pharmacies de garde au Togo.
+ *
+ * SERVER-SIDE RENDERED pour le SEO (contenu baked-in dans le HTML), avec un
+ * client component KioskView pour l&apos;interactivité (horloge, animation,
+ * bouton reload).
+ *
+ * Une section SEO contenant la liste complète des pharmacies est incluse
+ * visuellement cachée (sr-only) pour que Google puisse indexer tout le
+ * contenu sans être gêné par l&apos;animation kiosk.
  */
 
-'use client';
+import type { Metadata } from 'next';
+import { SCRAPED_PHARMACIES } from '@/server/data/scraped-pharmacies';
+import { KioskView } from '@/components/pharmacy/kiosk-view';
+import { JsonLd } from '@/components/seo/json-ld';
+import { pharmacyListJsonLd } from '@/lib/structured-data';
+import {
+  SITE_NAME,
+  SITE_SHORT_DESCRIPTION,
+  SITE_KEYWORDS,
+  canonicalUrl,
+  buildOpenGraph,
+  buildTwitterCard,
+} from '@/lib/seo-config';
+import { toInternational } from '@/lib/format-phone';
 
-import { usePharmacies } from '@/hooks/use-pharmacies';
-import { KioskHeader } from '@/components/pharmacy/kiosk-header';
-import { KioskScrollList } from '@/components/pharmacy/kiosk-scroll-list';
-import { KioskFooter } from '@/components/pharmacy/kiosk-footer';
-import { EmptyState } from '@/components/pharmacy/empty-state';
-import { KioskLockdown } from '@/components/pharmacy/kiosk-lockdown';
+export const metadata: Metadata = {
+  title: `${SITE_NAME} — 48 pharmacies de garde au Togo (Lomé)`,
+  description: SITE_SHORT_DESCRIPTION,
+  keywords: SITE_KEYWORDS,
+  alternates: {
+    canonical: canonicalUrl('/'),
+  },
+  openGraph: buildOpenGraph({
+    title: `${SITE_NAME} — 48 pharmacies de garde au Togo`,
+    description: SITE_SHORT_DESCRIPTION,
+    url: canonicalUrl('/'),
+  }),
+  twitter: buildTwitterCard({
+    title: `${SITE_NAME} — 48 pharmacies de garde au Togo`,
+    description: SITE_SHORT_DESCRIPTION,
+  }),
+};
 
 export default function Home() {
-  const {
-    pharmacies,
-    isLoading,
-    error,
-    lastUpdate,
-    isRefreshing,
-    refresh,
-  } = usePharmacies();
+  const pharmacies = SCRAPED_PHARMACIES.map((p) => ({
+    ...p,
+    scrapedAt: new Date().toISOString(),
+  }));
 
   return (
     <>
-      {/* Verrouillage complet - aucune interaction possible (sauf bouton reload) */}
-      <KioskLockdown />
-      <div className="h-screen flex flex-col bg-gray-50 overflow-hidden">
-      {/* Header fixe */}
-      <KioskHeader
-        totalPharmacies={pharmacies.length}
-        lastUpdate={lastUpdate}
-        onReload={refresh}
-        isRefreshing={isRefreshing}
-      />
+      {/* Données structurées : ItemList des 48 pharmacies */}
+      <JsonLd id="ld-pharmacy-list-home" data={pharmacyListJsonLd(pharmacies)} />
 
-      {/* Zone de défilement automatique infini */}
-      {isLoading ? (
-        <div className="flex-1 flex items-center justify-center">
-          <EmptyState type="loading" />
-        </div>
-      ) : error ? (
-        <div className="flex-1 flex items-center justify-center">
-          <EmptyState type="error" message={error} />
-        </div>
-      ) : pharmacies.length === 0 ? (
-        <div className="flex-1 flex items-center justify-center">
-          <EmptyState
-            type="no-results"
-            message="Aucune pharmacie de garde trouvée pour le moment."
-          />
-        </div>
-      ) : (
-        <KioskScrollList pharmacies={pharmacies} />
-      )}
+      <KioskView initialPharmacies={pharmacies} />
 
-      {/* Footer fixe */}
-      <KioskFooter />
-    </div>
+      {/* Section SEO — visible uniquement pour les crawlers et screen readers.
+          Cache visuellement mais reste dans le DOM pour l'indexation. */}
+      <section
+        aria-hidden="false"
+        className="sr-only"
+      >
+        <h1>Pharmacies de garde au Togo — Liste complète</h1>
+        <p>
+          Liste complète des {pharmacies.length} pharmacies de garde au Togo,
+          principalement situées à Lomé. Chaque pharmacie assure une permanence
+          24h/24 et 7j/7 pour les urgences pharmaceutiques.
+        </p>
+        <ul>
+          {pharmacies.map((p) => (
+            <li key={p.id}>
+              <h2>{p.name}</h2>
+              <p>
+                Adresse : {p.address}
+                <br />
+                Téléphone : {p.phones.map(toInternational).join(', ')}
+              </p>
+              <p>
+                {p.name} est une pharmacie de garde située à {p.address}. Vous
+                pouvez la contacter au {p.phones.map(toInternational).join(' ou ')}{' '}
+                pour vérifier la disponibilité d&apos;un médicament ou pour tout
+                besoin pharmaceutique urgent.
+              </p>
+            </li>
+          ))}
+        </ul>
+      </section>
     </>
   );
 }

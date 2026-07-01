@@ -1,6 +1,7 @@
 /**
  * @page Pharmacies de Garde au Togo
- * @description Page principale de l'application PWA
+ * @description Layout racine avec SEO complet : metadata, Open Graph, Twitter,
+ * JSON-LD structured data, lang, hreflang, etc.
  */
 
 import type { Metadata, Viewport } from 'next';
@@ -8,6 +9,24 @@ import { Montserrat } from 'next/font/google';
 import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
 import { ServiceWorkerRegistrar } from '@/components/pharmacy/service-worker-registrar';
+import { JsonLd } from '@/components/seo/json-ld';
+import {
+  websiteJsonLd,
+  organizationJsonLd,
+  faqJsonLd,
+} from '@/lib/structured-data';
+import {
+  SITE_NAME,
+  SITE_SHORT_DESCRIPTION,
+  SITE_KEYWORDS,
+  SITE_AUTHOR,
+  SITE_LOCALE,
+  SITE_URL,
+  THEME_COLOR,
+  canonicalUrl,
+  buildOpenGraph,
+  buildTwitterCard,
+} from '@/lib/seo-config';
 
 const montserrat = Montserrat({
   variable: '--font-montserrat',
@@ -19,43 +38,82 @@ const montserrat = Montserrat({
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
-  maximumScale: 1,
-  userScalable: false,
-  themeColor: '#047857',
+  maximumScale: 5, // Autoriser le zoom pour l'accessibilité (et SEO)
+  userScalable: true,
+  themeColor: THEME_COLOR,
   interactiveWidget: 'resizes-content',
 };
 
 export const metadata: Metadata = {
-  title: 'Pharmacies de Garde au Togo',
-  description:
-    'Trouvez facilement les pharmacies de garde au Togo. Liste mise à jour des pharmacies disponibles 24h/24 avec coordonnées complètes.',
-  keywords: [
-    'pharmacie',
-    'garde',
-    'Togo',
-    'Lomé',
-    'pharmacie de garde',
-    'urgence',
-    'santé',
-  ],
-  authors: [{ name: 'Pharmacies de Garde Togo' }],
-  manifest: '/manifest.json',
-  openGraph: {
-    title: 'Pharmacies de Garde au Togo',
-    description:
-      'Trouvez facilement les pharmacies de garde au Togo 24h/24.',
-    type: 'website',
-    locale: 'fr_TG',
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: `${SITE_NAME} | 48 pharmacies de garde au Togo (Lomé)`,
+    template: `%s | ${SITE_NAME}`,
   },
+  description: SITE_SHORT_DESCRIPTION,
+  keywords: SITE_KEYWORDS,
+  authors: [{ name: SITE_AUTHOR, url: SITE_URL }],
+  creator: SITE_AUTHOR,
+  publisher: SITE_AUTHOR,
+  applicationName: SITE_NAME,
+  generator: 'Next.js',
+  referrer: 'origin-when-cross-origin',
+  formatDetection: {
+    telephone: true, // Inverse de la version kiosk : on AUTORISE la détection de téléphone
+    email: false,
+    address: true,
+    date: false,
+  },
+  alternates: {
+    canonical: canonicalUrl('/'),
+    languages: {
+      'fr-TG': canonicalUrl('/'),
+      'fr-FR': canonicalUrl('/'),
+      x_default: canonicalUrl('/'),
+    },
+  },
+  openGraph: buildOpenGraph({
+    title: `${SITE_NAME} | 48 pharmacies de garde au Togo`,
+    description: SITE_SHORT_DESCRIPTION,
+    url: canonicalUrl('/'),
+  }),
+  twitter: buildTwitterCard({
+    title: `${SITE_NAME} | 48 pharmacies de garde au Togo`,
+    description: SITE_SHORT_DESCRIPTION,
+  }),
+  robots: {
+    index: true,
+    follow: true,
+    nocache: false,
+    googleBot: {
+      index: true,
+      follow: true,
+      noimageindex: false,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  manifest: '/manifest.json',
+  category: 'health',
+  bookmarks: [canonicalUrl('/')],
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
     title: 'PharmasTogo',
   },
   icons: {
-    icon: '/icons/icon-192x192.png',
-    apple: '/icons/apple-touch-icon.png',
+    icon: [
+      { url: '/icons/icon-192x192.png', sizes: '192x192', type: 'image/png' },
+      { url: '/icons/icon-512x512.png', sizes: '512x512', type: 'image/png' },
+      { url: '/favicon.ico', sizes: 'any' },
+    ],
+    apple: [
+      { url: '/icons/apple-touch-icon.png', sizes: '180x180' },
+    ],
+    shortcut: '/favicon.ico',
   },
+  archives: [canonicalUrl('/')],
 };
 
 export default function RootLayout({
@@ -66,14 +124,26 @@ export default function RootLayout({
   return (
     <html lang="fr" suppressHydrationWarning>
       <head>
+        {/* Preconnect to Google Fonts pour performance */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+
+        {/* Apple touch icon */}
         <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
-        {/* Verrouillage kiosk - aucune interaction */}
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        <meta name="apple-mobile-web-app-title" content="PharmasTogo" />
+
+        {/* Mobile web app capable */}
         <meta name="mobile-web-app-capable" content="yes" />
-        <meta name="format-detection" content="telephone=no" />
-        <meta name="format-detection" content="email=no" />
-        <meta name="format-detection" content="address=no" />
-        <meta name="format-detection" content="date=no" />
+
+        {/* Theme color (pour Chrome Android) */}
+        <meta name="theme-color" content={THEME_COLOR} />
+
+        {/* Données structurées JSON-LD : Organization + WebSite + FAQ */}
+        <JsonLd id="ld-organization" data={organizationJsonLd()} />
+        <JsonLd id="ld-website" data={websiteJsonLd()} />
+        <JsonLd id="ld-faq" data={faqJsonLd()} />
       </head>
       <body
         className={`${montserrat.variable} font-sans antialiased bg-gray-50 text-gray-900`}
