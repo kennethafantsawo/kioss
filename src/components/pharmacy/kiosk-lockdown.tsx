@@ -36,6 +36,13 @@ const KILL_EVENTS = [
 ] as const;
 
 function kill(e: Event): boolean {
+  // Exception : les éléments marqués data-kiosk-allow="true" (et leurs descendants)
+  // sont autorisés à interagir. Indispensable pour le bouton reload du header.
+  const target = e.target as Element | null;
+  if (target && typeof target.closest === 'function' && target.closest('[data-kiosk-allow="true"]')) {
+    return true; // ne pas bloquer
+  }
+
   e.preventDefault();
   e.stopPropagation();
   e.stopImmediatePropagation();

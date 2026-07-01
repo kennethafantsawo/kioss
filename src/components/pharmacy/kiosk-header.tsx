@@ -1,23 +1,36 @@
 /**
  * @component KioskHeader
- * @description En-tête kiosk fixe : branding, horloge, compteur
- * Mode lecture seule — aucun élément interactif
+ * @description En-tête kiosk fixe : branding, horloge, compteur, semaine active.
+ * Mode lecture seule — sauf le bouton reload (marqué data-kiosk-allow) qui
+ * passe à travers le verrouillage KioskLockdown.
  */
 
 'use client';
 
-import { useState, useEffect } from 'react';
-import { MapPin, ShieldCheck, Clock } from 'lucide-react';
+import { useState, useEffect, useCallback } from 'react';
+import { MapPin, ShieldCheck, Clock, RefreshCw, CalendarDays } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import { getCurrentGuardWeek, type GuardWeek } from '@/lib/guard-week';
 
 interface KioskHeaderProps {
   totalPharmacies: number;
   lastUpdate: string | null;
+  /** Déclenche un refresh forcé des pharmacies */
+  onReload?: () => void | Promise<void>;
+  /** Indique qu'un refresh est en cours (affiche un spinner) */
+  isRefreshing?: boolean;
 }
 
-export function KioskHeader({ totalPharmacies, lastUpdate }: KioskHeaderProps) {
+export function KioskHeader({
+  totalPharmacies,
+  lastUpdate,
+  onReload,
+  isRefreshing = false,
+}: KioskHeaderProps) {
   const [time, setTime] = useState<string>('');
   const [date, setDate] = useState<string>('');
+  const [guardWeek, setGuardWeek] = useState<GuardWeek | null>(null);
+  const [spinning, setSpinning] = useState(false);
 
   useEffect(() => {
     const tick = () => {
@@ -37,6 +50,7 @@ export function KioskHeader({ totalPharmacies, lastUpdate }: KioskHeaderProps) {
           year: 'numeric',
         })
       );
+      setGuardWeek(getCurrentGuardWeek(now));
     };
 
     tick();
@@ -46,6 +60,19 @@ export function KioskHeader({ totalPharmacies, lastUpdate }: KioskHeaderProps) {
 
   // Formater l'heure avec le séparateur clignotant
   const [hours, minutes, seconds] = time.split(':');
+
+  const handleReload = useCallback(async () => {
+    if (spinning || isRefreshing) return;
+    setSpinning(true);
+    try {
+      await onReload?.();
+    } finally {
+      // Animation minimum 600ms pour feedback visuel
+      setTimeout(() => setSpinning(false), 600);
+    }
+  }, [onReload, spinning, isRefreshing]);
+
+  const isRotating = spinning || isRefreshing;
 
   return (
     <header className="relative overflow-hidden bg-gradient-to-br from-emerald-600 via-emerald-700 to-teal-800 text-white shrink-0">
@@ -59,15 +86,35 @@ export function KioskHeader({ totalPharmacies, lastUpdate }: KioskHeaderProps) {
       <div className="relative max-w-5xl mx-auto px-6 py-4 sm:py-5">
         {/* Ligne 1 : Logo + titre à gauche, horloge à droite */}
         <div className="flex items-center justify-between gap-4">
-          {/* Logo et titre */}
+          {/* Logo et titre (avec bouton reload transparent devant) */}
           <div className="flex items-center gap-3">
             <div className="flex items-center justify-center w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-sm shadow-lg shadow-emerald-900/30">
               <ShieldCheck className="w-8 h-8 text-white" />
             </div>
             <div>
-              <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight leading-none">
-                Pharmacies de Garde
-              </h1>
+              <div className="flex items-center gap-2">
+                {/* Bouton reload transparent — passe à travers KioskLockdown via data-kiosk-allow */}
+                {onReload && (
+                  <button
+                    type="button"
+                    onClick={handleReload}
+                    data-kiosk-allow="true"
+                    aria-label="Recharger les pharmacies"
+                    title="Recharger les pharmacies"
+                    disabled={isRotating}
+                    className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-transparent hover:bg-white/15 active:bg-white/25 transition-colors duration-150 disabled:opacity-50 disabled:cursor-not-allowed outline-none focus:outline-none"
+                    style={{ cursor: isRotating ? 'wait' : 'pointer' }}
+                  >
+                    <RefreshCw
+                      className={`w-3.5 h-3.5 text-white ${isRotating ? 'animate-spin' : ''}`}
+                      strokeWidth={2.5}
+                    />
+                  </button>
+                )}
+                <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight leading-none">
+                  Pharmacies de Garde
+                </h1>
+              </div>
               <div className="flex items-center gap-1.5 text-emerald-100 text-sm mt-0.5">
                 <MapPin className="w-4 h-4" />
                 <span>Disponibles au Togo, 24h/24</span>
@@ -90,8 +137,8 @@ export function KioskHeader({ totalPharmacies, lastUpdate }: KioskHeaderProps) {
           </div>
         </div>
 
-        {/* Ligne 2 : Stats */}
-        <div className="flex items-center gap-3 mt-3 pt-3 border-t border-white/15">
+        {/* Ligne 2 : Stats + semaine active */}
+        <div className="flex flex-wrap items-center gap-3 mt-3 pt-3 border-t border-white/15">
           <Badge
             variant="secondary"
             className="bg-white/15 text-white border-0 text-sm px-3 py-1.5 font-semibold"
@@ -99,6 +146,21 @@ export function KioskHeader({ totalPharmacies, lastUpdate }: KioskHeaderProps) {
             <ShieldCheck className="w-3.5 h-3.5 mr-1.5" />
             {totalPharmacies} pharmacies de garde
           </Badge>
+
+          {/* Semaine active de garde */}
+          {guardWeek && (
+            <Badge
+              variant="secondary"
+              className="bg-amber-400/20 text-amber-50 border border-amber-200/30 text-sm px-3 py-1.5 font-semibold"
+              title={`Semaine du ${guardWeek.rangeLabel}`}
+            >
+              <CalendarDays className="w-3.5 h-3.5 mr-1.5" />
+              {guardWeek.fullLabel}
+              <span className="ml-1.5 font-normal text-amber-100/80 text-xs hidden sm:inline">
+                · {guardWeek.rangeLabel}
+              </span>
+            </Badge>
+          )}
 
           {lastUpdate && (
             <div className="flex items-center gap-1.5 text-emerald-200 text-xs sm:text-sm ml-auto">

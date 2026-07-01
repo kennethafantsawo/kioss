@@ -19,17 +19,21 @@ export default function Home() {
     isLoading,
     error,
     lastUpdate,
+    isRefreshing,
+    refresh,
   } = usePharmacies();
 
   return (
     <>
-      {/* Verrouillage complet - aucune interaction possible */}
+      {/* Verrouillage complet - aucune interaction possible (sauf bouton reload) */}
       <KioskLockdown />
       <div className="h-screen flex flex-col bg-gray-50 overflow-hidden">
       {/* Header fixe */}
       <KioskHeader
         totalPharmacies={pharmacies.length}
         lastUpdate={lastUpdate}
+        onReload={refresh}
+        isRefreshing={isRefreshing}
       />
 
       {/* Zone de défilement automatique infini */}
