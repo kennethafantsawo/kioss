@@ -1,8 +1,7 @@
 /**
  * @module PharmacyController
  * @description Contrôleur principal de l'API pharmacies
- * Orchestre les services de scraping et de cache
- * Utilise un fallback statique quand le scraping échoue
+ * Orchestre les services de données et de cache
  */
 
 import type {
@@ -11,7 +10,6 @@ import type {
   ICacheService,
   SyncResult,
 } from '../interfaces';
-import { FALLBACK_PHARMACIES } from '../data/fallback-pharmacies';
 import { createLogger } from '../utils/logger';
 
 export class PharmacyController implements IPharmacyController {
@@ -29,14 +27,11 @@ export class PharmacyController implements IPharmacyController {
 
   /**
    * Récupère la liste des pharmacies
-   * 1. Cache si disponible
-   * 2. Sinon scraping
-   * 3. Sinon fallback statique
+   * Utilise le cache si disponible et valide, sinon charge les données
    */
   async getPharmacies(forceRefresh: boolean = false): Promise<SyncResult> {
     this.logger.info('Récupération des pharmacies', { forceRefresh });
 
-    // 1. Retourner le cache si disponible
     if (!forceRefresh) {
       const cached = this.cacheService.get();
       if (cached) {
@@ -45,33 +40,13 @@ export class PharmacyController implements IPharmacyController {
       }
     }
 
-    // 2. Tenter le scraping
-    this.logger.info('Tentative de scraping...');
     const result = await this.scraperService.scrape();
 
-    // Si le scraping a réussi, utiliser et cacher les données
     if (result.success && result.pharmacies.length > 0) {
       this.cacheService.set(result);
-      return result;
     }
 
-    // 3. Fallback : données statiques
-    this.logger.warn('Scraping échoué, utilisation des données de secours', {
-      scrapeError: result.error,
-    });
-
-    const fallbackResult: SyncResult = {
-      success: true,
-      pharmacies: FALLBACK_PHARMACIES,
-      totalFound: FALLBACK_PHARMACIES.length,
-      scrapedAt: new Date().toISOString(),
-      durationMs: result.durationMs,
-    };
-
-    // Cacher aussi le fallback
-    this.cacheService.set(fallbackResult);
-
-    return fallbackResult;
+    return result;
   }
 
   /**
