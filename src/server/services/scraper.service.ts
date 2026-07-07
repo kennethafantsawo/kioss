@@ -1,7 +1,7 @@
 /**
  * @module ScraperService
  * @description Service de données pharmacies de garde au Togo.
- * Source principale : données scrapées depuis annuairestogo.com (48 pharmacies).
+ * Source principale : données officielles du Ministère de la Santé du Togo (212 pharmacies).
  * Fallback : données statiques de secours si le scraping est vide.
  * Principe SRP : unique responsabilité = fournir les données pharmacies
  * Principe DIP : dépend de l'interface IScraperService

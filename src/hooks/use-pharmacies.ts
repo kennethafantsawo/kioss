@@ -15,6 +15,10 @@ export interface Pharmacy {
   phones: string[];
   url?: string;
   scrapedAt: string;
+  /** Semaine de garde - date de début (format DD/MM/YYYY) */
+  gardeWeekStart?: string;
+  /** Semaine de garde - date de fin (format DD/MM/YYYY) */
+  gardeWeekEnd?: string;
 }
 
 interface PharmaciesResponse {

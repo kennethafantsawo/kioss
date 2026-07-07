@@ -47,7 +47,7 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: `${SITE_NAME} | 48 pharmacies de garde au Togo (Lomé)`,
+    default: `${SITE_NAME} | 212 pharmacies de garde au Togo (Lomé)`,
     template: `%s | ${SITE_NAME}`,
   },
   description: SITE_SHORT_DESCRIPTION,
@@ -73,12 +73,12 @@ export const metadata: Metadata = {
     },
   },
   openGraph: buildOpenGraph({
-    title: `${SITE_NAME} | 48 pharmacies de garde au Togo`,
+    title: `${SITE_NAME} | 212 pharmacies de garde au Togo`,
     description: SITE_SHORT_DESCRIPTION,
     url: canonicalUrl('/'),
   }),
   twitter: buildTwitterCard({
-    title: `${SITE_NAME} | 48 pharmacies de garde au Togo`,
+    title: `${SITE_NAME} | 212 pharmacies de garde au Togo`,
     description: SITE_SHORT_DESCRIPTION,
   }),
   robots: {

@@ -28,19 +28,19 @@ import {
 import { toInternational } from '@/lib/format-phone';
 
 export const metadata: Metadata = {
-  title: `${SITE_NAME} — 48 pharmacies de garde au Togo (Lomé)`,
+  title: `${SITE_NAME} — 212 pharmacies de garde au Togo (Lomé)`,
   description: SITE_SHORT_DESCRIPTION,
   keywords: SITE_KEYWORDS,
   alternates: {
     canonical: canonicalUrl('/'),
   },
   openGraph: buildOpenGraph({
-    title: `${SITE_NAME} — 48 pharmacies de garde au Togo`,
+    title: `${SITE_NAME} — 212 pharmacies de garde au Togo`,
     description: SITE_SHORT_DESCRIPTION,
     url: canonicalUrl('/'),
   }),
   twitter: buildTwitterCard({
-    title: `${SITE_NAME} — 48 pharmacies de garde au Togo`,
+    title: `${SITE_NAME} — 212 pharmacies de garde au Togo`,
     description: SITE_SHORT_DESCRIPTION,
   }),
 };
@@ -53,7 +53,7 @@ export default function Home() {
 
   return (
     <>
-      {/* Données structurées : ItemList des 48 pharmacies */}
+      {/* Données structurées : ItemList des 212 pharmacies */}
       <JsonLd id="ld-pharmacy-list-home" data={pharmacyListJsonLd(pharmacies)} />
 
       <KioskView initialPharmacies={pharmacies} />

@@ -139,7 +139,7 @@ export function faqJsonLd() {
         name: 'Comment trouver une pharmacie de garde à Lomé ?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'Consultez notre annuaire en ligne qui liste les 48 pharmacies de garde au Togo. Vous pouvez rechercher par nom, adresse ou numéro de téléphone, puis appeler directement ou envoyer un message WhatsApp depuis votre mobile.',
+          text: 'Consultez notre annuaire en ligne qui liste les 212 pharmacies de garde au Togo. Vous pouvez rechercher par nom, adresse ou numéro de téléphone, puis appeler directement ou envoyer un message WhatsApp depuis votre mobile.',
         },
       },
       {

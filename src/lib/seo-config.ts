@@ -20,7 +20,7 @@ export const SITE_NAME = 'Pharmacies de Garde au Togo';
 
 /** Description courte (≤160 caractères) */
 export const SITE_SHORT_DESCRIPTION =
-  'Liste complète et mise à jour des 48 pharmacies de garde au Togo (Lomé et régions). Numéros de téléphone, adresses, appel direct, WhatsApp et itinéraire Google Maps.';
+  'Liste complète et mise à jour des 212 pharmacies de garde au Togo (Lomé et régions). Numéros de téléphone, adresses, appel direct, WhatsApp et itinéraire Google Maps.';
 
 /** Description longue pour le contenu SEO */
 export const SITE_LONG_DESCRIPTION =

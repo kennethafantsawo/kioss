@@ -26,9 +26,9 @@ import {
 
 export const metadata: Metadata = {
   title:
-    'Pharmacies de garde au Togo — 48 pharmacies, appel, SMS, WhatsApp, Maps',
+    'Pharmacies de garde au Togo — 212 pharmacies, appel, SMS, WhatsApp, Maps',
   description:
-    'Liste complète des 48 pharmacies de garde au Togo (Lomé). Numéros de téléphone, adresses, appel direct, SMS, WhatsApp et itinéraire Google Maps. Service gratuit 24h/24.',
+    'Liste complète des 212 pharmacies de garde au Togo (Lomé). Numéros de téléphone, adresses, appel direct, SMS, WhatsApp et itinéraire Google Maps. Service gratuit 24h/24.',
   keywords: [
     'pharmacie de garde Togo',
     'pharmacie de garde Lomé',
@@ -46,16 +46,16 @@ export const metadata: Metadata = {
   },
   openGraph: buildOpenGraph({
     title:
-      'Pharmacies de garde au Togo — 48 pharmacies, appel, SMS, WhatsApp, Maps',
+      'Pharmacies de garde au Togo — 212 pharmacies, appel, SMS, WhatsApp, Maps',
     description:
-      'Liste complète des 48 pharmacies de garde au Togo. Coordonnées, appel direct, SMS, WhatsApp et Google Maps. Gratuit 24h/24.',
+      'Liste complète des 212 pharmacies de garde au Togo. Coordonnées, appel direct, SMS, WhatsApp et Google Maps. Gratuit 24h/24.',
     url: canonicalUrl('/mobile'),
   }),
   twitter: buildTwitterCard({
     title:
-      'Pharmacies de garde au Togo — 48 pharmacies, appel, SMS, WhatsApp, Maps',
+      'Pharmacies de garde au Togo — 212 pharmacies, appel, SMS, WhatsApp, Maps',
     description:
-      'Liste complète des 48 pharmacies de garde au Togo. Coordonnées, appel direct, SMS, WhatsApp et Google Maps.',
+      'Liste complète des 212 pharmacies de garde au Togo. Coordonnées, appel direct, SMS, WhatsApp et Google Maps.',
   }),
   robots: {
     index: true,
@@ -79,7 +79,7 @@ export default function MobilePage() {
 
   return (
     <>
-      {/* Données structurées : ItemList des 48 pharmacies (carrousel Google) */}
+      {/* Données structurées : ItemList des 212 pharmacies (carrousel Google) */}
       <JsonLd id="ld-pharmacy-list" data={pharmacyListJsonLd(pharmacies)} />
       <JsonLd
         id="ld-breadcrumb-mobile"
