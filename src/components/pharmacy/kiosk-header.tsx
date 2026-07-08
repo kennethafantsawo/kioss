@@ -19,6 +19,8 @@ interface KioskHeaderProps {
   onReload?: () => void | Promise<void>;
   /** Indique qu'un refresh est en cours (affiche un spinner) */
   isRefreshing?: boolean;
+  /** Libellé de la semaine de garde en cours (ex: "06/07/2026 → 13/07/2026") */
+  currentWeekLabel?: string | null;
 }
 
 export function KioskHeader({
@@ -26,6 +28,7 @@ export function KioskHeader({
   lastUpdate,
   onReload,
   isRefreshing = false,
+  currentWeekLabel,
 }: KioskHeaderProps) {
   const [time, setTime] = useState<string>('');
   const [date, setDate] = useState<string>('');
@@ -147,7 +150,7 @@ export function KioskHeader({
             {totalPharmacies} pharmacies de garde
           </Badge>
 
-          {/* Semaine active de garde */}
+          {/* Semaine active de garde (badge ISO A/B) */}
           {guardWeek && (
             <Badge
               variant="secondary"
@@ -159,6 +162,18 @@ export function KioskHeader({
               <span className="ml-1.5 font-normal text-amber-100/80 text-xs hidden sm:inline">
                 · {guardWeek.rangeLabel}
               </span>
+            </Badge>
+          )}
+
+          {/* Période de garde effective (semaine exacte du Ministère) */}
+          {currentWeekLabel && (
+            <Badge
+              variant="secondary"
+              className="bg-emerald-400/30 text-white border border-emerald-200/40 text-sm px-3 py-1.5 font-semibold animate-pulse"
+              title="Semaine de garde en cours selon le Ministère de la Santé du Togo"
+            >
+              <CalendarDays className="w-3.5 h-3.5 mr-1.5" />
+              Garde : {currentWeekLabel}
             </Badge>
           )}
 
